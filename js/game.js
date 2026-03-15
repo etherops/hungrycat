@@ -21,19 +21,24 @@ let gameState = {
 let lastTimestamp = 0;
 
 function startLevel() {
-  gameState.maze = createMaze();
+  gameState.maze = createMaze(gameState.level);
   gameState.player = createPlayer();
   gameState.enemies = createEnemies(gameState.level);
   gameState.wasabiTimer = 0;
   gameState.elapsed = 0;
+  const theme = getLevelTheme(gameState.level);
+  COLORS.wall = theme.wall;
+  COLORS.wallBorder = theme.wallBorder;
 }
 
 function startGame() {
+  initAudio();
   gameState.score = 0;
   gameState.level = 1;
   gameState.lives = INITIAL_LIVES;
   gameState.state = 'playing';
   startLevel();
+  startMusic();
 }
 
 function gameLoop(timestamp) {
@@ -55,11 +60,15 @@ function update(dt) {
     const events = updatePlayer(gameState.player, gameState.maze, dt);
 
     for (const event of events) {
-      if (event === 'sushi') gameState.score += 10;
+      if (event === 'sushi') {
+        gameState.score += 10;
+        sfxEatSushi();
+      }
       if (event === 'wasabi') {
         gameState.score += 50;
         gameState.wasabiTimer = WASABI_DURATION;
         gameState.enemies.forEach(e => frightenEnemy(e));
+        sfxEatWasabi();
       }
     }
 
@@ -83,13 +92,17 @@ function update(dt) {
         if (enemy.state === 'frightened') {
           gameState.score += 200;
           enemy.state = 'eaten';
+          sfxEatRat();
         } else if (enemy.state === 'active') {
           gameState.lives--;
           if (gameState.lives <= 0) {
             gameState.state = 'gameover';
+            stopMusic();
+            sfxGameOver();
           } else {
             gameState.state = 'dying';
             gameState.dyingTimer = 1000;
+            sfxDeath();
           }
           return;
         }
@@ -101,6 +114,7 @@ function update(dt) {
       gameState.state = 'levelcomplete';
       gameState.levelCompleteTimer = 2000;
       gameState.score += 500;
+      sfxLevelComplete();
     }
   }
 
@@ -251,6 +265,11 @@ function renderLevelComplete() {
   ctx.fillStyle = COLORS.text;
   ctx.font = '14px monospace';
   ctx.fillText(`+500 bonus!`, canvas.width / 2, canvas.height / 2 + 20);
+
+  const nextTheme = getLevelTheme(gameState.level + 1);
+  ctx.fillStyle = '#aaaaaa';
+  ctx.font = '11px monospace';
+  ctx.fillText(`Next: ${nextTheme.name}`, canvas.width / 2, canvas.height / 2 + 45);
 }
 
 // Input handling

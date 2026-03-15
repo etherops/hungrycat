@@ -1,5 +1,5 @@
-function createMaze() {
-  return MAZE_LAYOUT.map(row => [...row]);
+function createMaze(level) {
+  return getMazeLayout(level).map(row => [...row]);
 }
 
 function renderMaze(ctx, maze, frame, wasabiActive) {
@@ -44,12 +44,6 @@ function isTileWalkableForEnemy(maze, col, row, enemyState) {
   if (col < 0 || col >= COLS) return TUNNEL_ROWS.includes(row);
   if (row < 0 || row >= ROWS) return TUNNEL_COLS.includes(col);
   return maze[row][col] !== WALL;
-  const tile = maze[row][col];
-  if (tile === WALL) return false;
-  // Only penned/eaten enemies can walk through pen gate; active enemies cannot re-enter
-  if (tile === PEN_GATE && enemyState === 'active') return true;
-  if (tile === PEN_GATE) return true;
-  return true;
 }
 
 function countRemainingSushi(maze) {

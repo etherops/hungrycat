@@ -17,8 +17,9 @@ function createEnemy(id, col, row, releaseTime) {
 }
 
 function createEnemies(level) {
+  const positions = getEnemyPositions(level);
   const releaseMultiplier = level === 1 ? 2 : 1;
-  return ENEMY_POSITIONS.map((pos, i) => {
+  return positions.map((pos, i) => {
     const releaseDelay = i * ENEMY_RELEASE_INTERVAL * releaseMultiplier;
     const enemy = createEnemy(i, pos.col, pos.row, releaseDelay);
     enemy.speed = level === 1 ? ENEMY_BASE_SPEED * 0.7 : ENEMY_BASE_SPEED * Math.pow(1.1, level - 1);

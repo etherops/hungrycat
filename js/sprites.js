@@ -21,30 +21,30 @@ function drawCat(ctx, x, y, direction, frame) {
   ctx.lineTo(cx + r * 0.4, cy + r * 0.5);
   ctx.stroke();
 
-  // Ears
+  // Pointy ears — tall narrow triangles
   ctx.fillStyle = '#888899';
   ctx.beginPath();
-  ctx.moveTo(cx - r * 0.7, cy - r * 0.5);
-  ctx.lineTo(cx - r * 0.3, cy - r * 1.1);
-  ctx.lineTo(cx - r * 0.0, cy - r * 0.5);
+  ctx.moveTo(cx - r * 0.8, cy - r * 0.3);
+  ctx.lineTo(cx - r * 0.35, cy - r * 1.5);
+  ctx.lineTo(cx - r * 0.05, cy - r * 0.4);
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(cx + r * 0.0, cy - r * 0.5);
-  ctx.lineTo(cx + r * 0.3, cy - r * 1.1);
-  ctx.lineTo(cx + r * 0.7, cy - r * 0.5);
+  ctx.moveTo(cx + r * 0.05, cy - r * 0.4);
+  ctx.lineTo(cx + r * 0.35, cy - r * 1.5);
+  ctx.lineTo(cx + r * 0.8, cy - r * 0.3);
   ctx.fill();
 
   // Inner ears - pink
   ctx.fillStyle = '#ffaaaa';
   ctx.beginPath();
-  ctx.moveTo(cx - r * 0.55, cy - r * 0.55);
-  ctx.lineTo(cx - r * 0.3, cy - r * 0.9);
-  ctx.lineTo(cx - r * 0.1, cy - r * 0.55);
+  ctx.moveTo(cx - r * 0.6, cy - r * 0.4);
+  ctx.lineTo(cx - r * 0.35, cy - r * 1.2);
+  ctx.lineTo(cx - r * 0.15, cy - r * 0.45);
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(cx + r * 0.1, cy - r * 0.55);
-  ctx.lineTo(cx + r * 0.3, cy - r * 0.9);
-  ctx.lineTo(cx + r * 0.55, cy - r * 0.55);
+  ctx.moveTo(cx + r * 0.15, cy - r * 0.45);
+  ctx.lineTo(cx + r * 0.35, cy - r * 1.2);
+  ctx.lineTo(cx + r * 0.6, cy - r * 0.4);
   ctx.fill();
 
   // Eyes

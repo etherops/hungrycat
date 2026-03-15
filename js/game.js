@@ -74,7 +74,7 @@ function update(dt) {
 
     // Update enemies
     for (const enemy of gameState.enemies) {
-      updateEnemy(enemy, gameState.maze, gameState.player.col, gameState.player.row, dt, gameState.elapsed);
+      updateEnemy(enemy, gameState.maze, gameState.player.col, gameState.player.row, dt, gameState.elapsed, gameState.level);
     }
 
     // Check collisions

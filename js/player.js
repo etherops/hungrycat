@@ -56,13 +56,21 @@ function updatePlayer(player, maze, dt) {
         player.row = nr;
         player.moving = true;
 
-        // Handle tunnel wrapping
+        // Handle tunnel wrapping (horizontal)
         if (player.col < 0) {
           player.col = COLS - 1;
           player.pixelX = player.col * TILE_SIZE;
         } else if (player.col >= COLS) {
           player.col = 0;
           player.pixelX = player.col * TILE_SIZE;
+        }
+        // Handle tunnel wrapping (vertical)
+        if (player.row < 0) {
+          player.row = ROWS - 1;
+          player.pixelY = player.row * TILE_SIZE;
+        } else if (player.row >= ROWS) {
+          player.row = 0;
+          player.pixelY = player.row * TILE_SIZE;
         }
       } else {
         player.moving = false;

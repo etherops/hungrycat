@@ -31,17 +31,19 @@ function renderMaze(ctx, maze, frame, wasabiActive) {
 }
 
 const TUNNEL_ROWS = [8, 13];
+const TUNNEL_COLS = [4, 16];
 
 function isTileWalkable(maze, col, row) {
   if (col < 0 || col >= COLS) return TUNNEL_ROWS.includes(row);
-  if (row < 0 || row >= ROWS) return false;
+  if (row < 0 || row >= ROWS) return TUNNEL_COLS.includes(col);
   const tile = maze[row][col];
   return tile !== WALL;
 }
 
 function isTileWalkableForEnemy(maze, col, row, enemyState) {
   if (col < 0 || col >= COLS) return TUNNEL_ROWS.includes(row);
-  if (row < 0 || row >= ROWS) return false;
+  if (row < 0 || row >= ROWS) return TUNNEL_COLS.includes(col);
+  return maze[row][col] !== WALL;
   const tile = maze[row][col];
   if (tile === WALL) return false;
   // Only penned/eaten enemies can walk through pen gate; active enemies cannot re-enter

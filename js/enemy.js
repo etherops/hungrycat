@@ -17,10 +17,11 @@ function createEnemy(id, col, row, releaseTime) {
 }
 
 function createEnemies(level) {
+  const releaseMultiplier = level === 1 ? 2 : 1;
   return ENEMY_POSITIONS.map((pos, i) => {
-    const releaseDelay = i * ENEMY_RELEASE_INTERVAL;
+    const releaseDelay = i * ENEMY_RELEASE_INTERVAL * releaseMultiplier;
     const enemy = createEnemy(i, pos.col, pos.row, releaseDelay);
-    enemy.speed = ENEMY_BASE_SPEED * Math.pow(1.1, level - 1);
+    enemy.speed = level === 1 ? ENEMY_BASE_SPEED * 0.7 : ENEMY_BASE_SPEED * Math.pow(1.1, level - 1);
     return enemy;
   });
 }
@@ -33,7 +34,7 @@ function oppositeDirection(dir) {
   return null;
 }
 
-function updateEnemy(enemy, maze, playerCol, playerRow, dt, elapsed) {
+function updateEnemy(enemy, maze, playerCol, playerRow, dt, elapsed, level) {
   if (enemy.state === 'penned') {
     enemy.bobOffset = Math.sin(elapsed * 0.005) * 3;
     if (elapsed >= enemy.releaseTime) {
@@ -93,8 +94,8 @@ function updateEnemy(enemy, maze, playerCol, playerRow, dt, elapsed) {
     if (enemy.state === 'frightened') {
       chosenDir = choices[Math.floor(Math.random() * choices.length)];
     } else {
-      // 70% chase, 30% random
-      if (Math.random() < 0.7 && choices.length > 0) {
+      const chaseChance = level === 1 ? 0.35 : Math.min(0.7 + (level - 2) * 0.05, 0.9);
+      if (Math.random() < chaseChance && choices.length > 0) {
         // Pick direction that minimizes distance to player
         let bestDist = Infinity;
         chosenDir = choices[0];
@@ -124,6 +125,14 @@ function updateEnemy(enemy, maze, playerCol, playerRow, dt, elapsed) {
       } else if (nc >= COLS) {
         enemy.col = 0;
         enemy.pixelX = enemy.col * TILE_SIZE;
+      } else if (nr < 0) {
+        enemy.col = nc;
+        enemy.row = ROWS - 1;
+        enemy.pixelY = enemy.row * TILE_SIZE;
+      } else if (nr >= ROWS) {
+        enemy.col = nc;
+        enemy.row = 0;
+        enemy.pixelY = enemy.row * TILE_SIZE;
       } else {
         enemy.col = nc;
         enemy.row = nr;

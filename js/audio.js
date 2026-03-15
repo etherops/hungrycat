@@ -9,7 +9,10 @@ const BPM = 140;
 const BEAT_DURATION = 60 / BPM;
 
 function initAudio() {
-  if (audioCtx) return;
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return;
+  }
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   musicGain = audioCtx.createGain();
   musicGain.gain.value = 0.15;
@@ -109,7 +112,16 @@ function startMusic() {
   initAudio();
   musicPlaying = true;
   currentBeat = 0;
-  scheduleBeat();
+
+  // Ensure context is running before scheduling notes
+  const kickoff = () => {
+    if (audioCtx.state === 'running') {
+      scheduleBeat();
+    } else {
+      audioCtx.resume().then(scheduleBeat);
+    }
+  };
+  kickoff();
 }
 
 function stopMusic() {

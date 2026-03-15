@@ -2,7 +2,7 @@ function createMaze() {
   return MAZE_LAYOUT.map(row => [...row]);
 }
 
-function renderMaze(ctx, maze, frame) {
+function renderMaze(ctx, maze, frame, wasabiActive) {
   const hudOffset = HUD_HEIGHT * TILE_SIZE;
 
   for (let row = 0; row < ROWS; row++) {
@@ -13,7 +13,7 @@ function renderMaze(ctx, maze, frame) {
 
       switch (tile) {
         case WALL:
-          drawWall(ctx, x, y, maze, col, row);
+          drawWall(ctx, x, y, maze, col, row, wasabiActive);
           break;
         case CORRIDOR_SUSHI:
           drawSushi(ctx, x, y);
@@ -30,16 +30,17 @@ function renderMaze(ctx, maze, frame) {
   }
 }
 
+const TUNNEL_ROWS = [8, 13];
+
 function isTileWalkable(maze, col, row) {
-  // Handle tunnel wrapping
-  if (col < 0 || col >= COLS) return row === 10; // tunnel row
+  if (col < 0 || col >= COLS) return TUNNEL_ROWS.includes(row);
   if (row < 0 || row >= ROWS) return false;
   const tile = maze[row][col];
   return tile !== WALL;
 }
 
 function isTileWalkableForEnemy(maze, col, row, enemyState) {
-  if (col < 0 || col >= COLS) return row === 10;
+  if (col < 0 || col >= COLS) return TUNNEL_ROWS.includes(row);
   if (row < 0 || row >= ROWS) return false;
   const tile = maze[row][col];
   if (tile === WALL) return false;

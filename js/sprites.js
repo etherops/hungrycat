@@ -83,20 +83,21 @@ function drawCat(ctx, x, y, direction, frame) {
   }
 }
 
-function drawRat(ctx, x, y, direction, frightened, frame) {
+function drawRat(ctx, x, y, direction, frightened, frame, flashing) {
   const cx = x + TILE_SIZE / 2;
   const cy = y + TILE_SIZE / 2;
   const r = TILE_SIZE * 0.38;
 
-  // Body
-  ctx.fillStyle = frightened ? '#4444ff' : '#999999';
+  // Body — flash white/blue when wasabi is about to expire
+  const flashWhite = flashing && Math.floor(frame / 5) % 2 === 0;
+  const bodyColor = frightened ? (flashWhite ? '#ffffff' : '#4444ff') : '#999999';
+  ctx.fillStyle = bodyColor;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
 
   // Ears - round
-  const earColor = frightened ? '#3333cc' : '#ccbbbb';
-  ctx.fillStyle = earColor;
+  ctx.fillStyle = frightened ? (flashWhite ? '#dddddd' : '#3333cc') : '#ccbbbb';
   ctx.beginPath();
   ctx.arc(cx - r * 0.6, cy - r * 0.7, r * 0.3, 0, Math.PI * 2);
   ctx.fill();
@@ -180,16 +181,16 @@ function drawWasabi(ctx, x, y, frame) {
   ctx.fill();
 }
 
-function drawWall(ctx, x, y, maze, col, row) {
+function drawWall(ctx, x, y, maze, col, row, wasabiActive) {
   const isWall = (c, r) => {
     if (c < 0 || c >= COLS || r < 0 || r >= ROWS) return true;
     return maze[r][c] === WALL;
   };
 
-  ctx.fillStyle = COLORS.wall;
+  ctx.fillStyle = wasabiActive ? '#0a2a1a' : COLORS.wall;
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-  ctx.strokeStyle = COLORS.wallBorder;
+  ctx.strokeStyle = wasabiActive ? '#22aa44' : COLORS.wallBorder;
   ctx.lineWidth = 1;
 
   const top = !isWall(col, row - 1);

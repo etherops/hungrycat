@@ -135,14 +135,16 @@ function render() {
     return;
   }
 
+  const wasabiActive = gameState.wasabiTimer > 0;
+
   // Draw maze
-  renderMaze(ctx, gameState.maze, gameState.frame);
+  renderMaze(ctx, gameState.maze, gameState.frame, wasabiActive);
 
   // Draw entities (skip during dying flash)
   if (gameState.state !== 'dying' || Math.floor(gameState.dyingTimer / 150) % 2 === 0) {
     renderPlayer(ctx, gameState.player, gameState.frame);
   }
-  gameState.enemies.forEach(e => renderEnemy(ctx, e, gameState.frame));
+  gameState.enemies.forEach(e => renderEnemy(ctx, e, gameState.frame, gameState.wasabiTimer));
 
   // HUD
   renderHUD();
@@ -170,6 +172,24 @@ function renderHUD() {
   ctx.textAlign = 'right';
   for (let i = 0; i < gameState.lives; i++) {
     drawLife(ctx, canvas.width - 20 - i * 18, 10);
+  }
+
+  // Wasabi countdown bar
+  if (gameState.wasabiTimer > 0) {
+    const barWidth = canvas.width - 16;
+    const barHeight = 4;
+    const barY = HUD_HEIGHT * TILE_SIZE - barHeight - 2;
+    const fraction = gameState.wasabiTimer / WASABI_DURATION;
+    const expiring = gameState.wasabiTimer <= WASABI_FLASH_THRESHOLD;
+    const flashOn = expiring && Math.floor(gameState.frame / 5) % 2 === 0;
+
+    // Background
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(8, barY, barWidth, barHeight);
+
+    // Fill
+    ctx.fillStyle = expiring ? (flashOn ? '#ffffff' : '#ff4444') : '#44dd44';
+    ctx.fillRect(8, barY, barWidth * fraction, barHeight);
   }
 }
 

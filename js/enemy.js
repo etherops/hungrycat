@@ -183,9 +183,10 @@ function checkCollision(enemy, player) {
   return dx < TILE_SIZE * 0.7 && dy < TILE_SIZE * 0.7;
 }
 
-function renderEnemy(ctx, enemy, frame) {
+function renderEnemy(ctx, enemy, frame, wasabiTimer) {
   const hudOffset = HUD_HEIGHT * TILE_SIZE;
   const bobY = enemy.state === 'penned' ? enemy.bobOffset : 0;
   if (enemy.state === 'eaten') return;
-  drawRat(ctx, enemy.pixelX, enemy.pixelY + hudOffset + bobY, enemy.direction, enemy.state === 'frightened', frame);
+  const flashing = enemy.state === 'frightened' && wasabiTimer > 0 && wasabiTimer <= WASABI_FLASH_THRESHOLD;
+  drawRat(ctx, enemy.pixelX, enemy.pixelY + hudOffset + bobY, enemy.direction, enemy.state === 'frightened', frame, flashing);
 }
